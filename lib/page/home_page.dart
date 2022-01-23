@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:quran/page/home_baru.dart';
-//import 'package:quran/model/random.dart';
-import 'package:quran/page/quran_baca.dart';
-//import 'package:quran/page/quran_list.dart';
 import 'package:arabic_numbers/arabic_numbers.dart';
 import 'package:quran/page/quran_list_ar.dart';
 import 'package:quran/page/berita_detail.dart';
@@ -22,6 +19,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  //var controller = Get.put(RandomController());
+
   // Random? random2;
   ArabicNumbers arabicNumber = ArabicNumbers();
   final String quranList =
@@ -29,6 +28,16 @@ class _HomePageState extends State<HomePage> {
   Future<List<dynamic>> _fecthDataBerita() async {
     var result = await http.get(Uri.parse(quranList));
     return json.decode(result.body)['data']['posts'];
+  }
+
+  Future<Map<String, dynamic>?> getRandom() async {
+    Uri url = Uri.parse("https://quran-api-id.vercel.app/random");
+    var response1 = await http.get(url);
+    if (response1.statusCode != 200) {
+      return null;
+    } else {
+      return jsonDecode(response1.body) as Map<String, dynamic>;
+    }
   }
 
   @override
@@ -46,25 +55,42 @@ class _HomePageState extends State<HomePage> {
             Container(
               height: 180,
               width: double.maxFinite,
-              child: Card(
-                elevation: 1,
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 66,
-                      child: Column(
-                        children: const [
+              child: FutureBuilder<Map<String, dynamic>?>(
+                future: getRandom(),
+                builder: (context, snapshot1) {
+                  if (snapshot1.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    //return Text(snapshot1.data!['data']['arab']);
+                    return Card(
+                      elevation: 1,
+                      child: Row(
+                        children: [
                           Expanded(
-                            flex: 50,
-                            child: Center(child: Text('abc')),
-                          ),
-                          Expanded(flex: 25, child: Text('def')),
-                          Expanded(flex: 25, child: Text('ghi')),
+                            flex: 66,
+                            child: Column(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    snapshot1.data!['data']['arab'],
+                                    style: const TextStyle(
+                                        fontFamily: 'PDMSSaleem', fontSize: 20),
+                                  ),
+                                ),
+                                Expanded(
+                                    child: Text(snapshot1.data!['data']
+                                        ['translation'])),
+                                Expanded(child: Text('Surah')),
+                              ],
+                            ),
+                          )
                         ],
                       ),
-                    )
-                  ],
-                ),
+                    );
+                  }
+                },
               ),
             ),
             // const Padding(
@@ -83,12 +109,13 @@ class _HomePageState extends State<HomePage> {
                   padding: EdgeInsets.all(30.0),
                   child: Column(
                     // Replace with a Row for horizontal icon + text
-                    children: const <Widget>[
-                      Icon(
-                        Icons.people,
-                        size: 40,
+                    children: <Widget>[
+                      Image.asset(
+                        'assets/image/baca.png',
+                        width: 50,
+                        height: 50,
                       ),
-                      Text("Baca Quran")
+                      const Text("Baca Quran")
                     ],
                   ),
                 ),
@@ -98,10 +125,11 @@ class _HomePageState extends State<HomePage> {
                   padding: EdgeInsets.all(30.0),
                   child: Column(
                     // Replace with a Row for horizontal icon + text
-                    children: const <Widget>[
-                      Icon(
-                        Icons.surfing,
-                        size: 40,
+                    children: <Widget>[
+                      Image.asset(
+                        'assets/image/baca.png',
+                        width: 50,
+                        height: 50,
                       ),
                       Text("Jadwal Shalat")
                     ],
@@ -118,10 +146,11 @@ class _HomePageState extends State<HomePage> {
                   padding: EdgeInsets.all(30.0),
                   child: Column(
                     // Replace with a Row for horizontal icon + text
-                    children: const <Widget>[
-                      Icon(
-                        Icons.audiotrack,
-                        size: 40,
+                    children: <Widget>[
+                      Image.asset(
+                        'assets/image/baca.png',
+                        width: 50,
+                        height: 50,
                       ),
                       Text("Murotal")
                     ],

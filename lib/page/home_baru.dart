@@ -1,80 +1,181 @@
+import 'dart:convert';
 import 'dart:math';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-//import 'package:audioplayers/audioplayers.dart';
+import 'package:quran/page/quran_list_ar.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-import 'package:quran/page/quran_baca.dart';
 
 class HomeBaru extends StatelessWidget {
-  HomeBaru({Key? key}) : super(key: key);
-  var audio = AudioPlayer();
-  //AudioPlayerState audioPlayerState = AudioPlayerState.PAUSED;
+  const HomeBaru({Key? key}) : super(key: key);
 
-  final String quranList =
-      "https://api-berita-indonesia.vercel.app/republika/islam";
-  Future<List> _fecthDataUsers() async {
-    var result = await http.get(Uri.parse(quranList));
-    return json.decode(result.body)['data']['posts'];
-  }
-
-  final String randomurl = "https://quran-api-id.vercel.app/random";
-  Future<List<dynamic>> _randomData() async {
-    var result = await http.get(Uri.parse(randomurl));
-    return json.decode(result.body)['data'];
+  Future<Map<String, dynamic>?> getRandom() async {
+    Uri url = Uri.parse("https://quran-api-id.vercel.app/random");
+    var response1 = await http.get(url);
+    if (response1.statusCode != 200) {
+      return null;
+    } else {
+      return jsonDecode(response1.body) as Map<String, dynamic>;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Alqur`an'),
+        title: const Text('Home Baru'),
       ),
-      body: Column(
-        children: <Widget>[
-          Container(
-            child: FutureBuilder<List<dynamic>>(
-              future: _fecthDataUsers(),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
-                  return ListView.builder(
-                      padding: const EdgeInsets.all(10),
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ListTile(
-                          leading: const Text("test"),
-                          title: Text(snapshot.data[index]['title']),
-                        );
-                      });
-                } else {
-                  return const Center(child: CircularProgressIndicator());
-                }
-              },
+      body: SingleChildScrollView(
+        physics: const ScrollPhysics(),
+        //padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              height: 180,
+              width: double.maxFinite,
+              child: Card(
+                elevation: 1,
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 66,
+                      child: Column(
+                        children: const [
+                          Expanded(
+                            flex: 50,
+                            child: Text("controller.random"),
+                          ),
+                          Expanded(flex: 25, child: Text('def')),
+                          Expanded(flex: 25, child: Text('ghi')),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ),
-          ),
-          Container(
-            child: FutureBuilder<List>(
-              future: _randomData(),
-              builder: (BuildContext context, AsyncSnapshot snap) {
-                if (snap.hasData) {
-                  return ListView.builder(
-                      padding: const EdgeInsets.all(10),
-                      itemCount: snap.data.length,
-                      itemBuilder: (BuildContext context, int i) {
-                        return ListTile(
-                          leading: const Text("test"),
-                          title: Text(snap.data[i]['arab']),
-                        );
-                      });
-                } else {
-                  return const Center(child: CircularProgressIndicator());
-                }
-              },
+            // const Padding(
+            //   padding: EdgeInsets.all(10.0),
+            //   child: Text("Menu"),
+            // ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FlatButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => QuranList()));
+                  },
+                  //color: Colors.orange,
+                  padding: EdgeInsets.all(30.0),
+                  child: Column(
+                    // Replace with a Row for horizontal icon + text
+                    children: const <Widget>[
+                      Icon(
+                        Icons.people,
+                        size: 40,
+                      ),
+                      Text("Baca Quran")
+                    ],
+                  ),
+                ),
+                FlatButton(
+                  onPressed: () => {},
+                  // color: Colors.orange,
+                  padding: EdgeInsets.all(30.0),
+                  child: Column(
+                    // Replace with a Row for horizontal icon + text
+                    children: const <Widget>[
+                      Icon(
+                        Icons.surfing,
+                        size: 40,
+                      ),
+                      Text("Jadwal Shalat")
+                    ],
+                  ),
+                ),
+                FlatButton(
+                  onPressed: () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeBaru()),
+                    ),
+                  },
+                  // color: Colors.orange,
+                  padding: EdgeInsets.all(30.0),
+                  child: Column(
+                    // Replace with a Row for horizontal icon + text
+                    children: const <Widget>[
+                      Icon(
+                        Icons.audiotrack,
+                        size: 40,
+                      ),
+                      Text("Murotal")
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
+            SizedBox(
+              height: 150.0,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: <Widget>[
+                  Container(
+                    margin: const EdgeInsets.all(3.0),
+                    width: 300,
+                    color: Colors.blue[600],
+                    child: const Center(
+                        child: Text(
+                      'Item 1',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    )),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.all(3.0),
+                    width: 300,
+                    color: Colors.blue[500],
+                    child: const Center(
+                        child: Text(
+                      'Item 2',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    )),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.all(3.0),
+                    width: 300,
+                    color: Colors.blue[400],
+                    child: const Center(
+                        child: Text(
+                      'Item 3',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    )),
+                  ),
+                ],
+              ),
+            ),
+
+            const Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Text("Berita Tentang Islam"),
+            ),
+
+            Container(
+              child: FutureBuilder<Map<String, dynamic>?>(
+                future: getRandom(),
+                builder: (context, snapshot1) {
+                  if (snapshot1.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    return Text(snapshot1.data!['data']['arab']);
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

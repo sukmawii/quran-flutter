@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 //import 'package:quran/page/home_stateful.dart';
 import 'page/home_page.dart';
 //import 'package:quran/model/random.dart';
@@ -9,12 +10,13 @@ void main() {
     title: 'Flutter Widget',
     //home: HomeBaru(),
     home: HomePage(),
+
     debugShowCheckedModeBanner: false,
     theme: ThemeData(
       primaryColor: Colors.red[800],
-      fontFamily: 'Quicksand',
+      fontFamily: 'Poppins',
     ),
-    darkTheme: ThemeData.dark(), // standard dark theme
+    darkTheme: ThemeData.dark(),
     themeMode: ThemeMode.system, // device controls theme
   ));
 }
